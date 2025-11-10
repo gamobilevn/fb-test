@@ -16,11 +16,29 @@
     button { background: #1877f2; border: none; color: white; padding: 8px 14px; border-radius: 6px; cursor: pointer; margin-top: 10px; }
     button:hover { background: #145fc0; }
     footer { text-align: center; padding: 20px; font-size: 13px; color: #555; }
+    .config { background: #fff; border-radius: 8px; padding: 12px; margin: 20px auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .config label { display: block; font-weight: 600; margin-top: 10px; }
+    .config input { width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 6px; margin-top: 4px; }
   </style>
 </head>
 <body>
   <header>Cửa hàng thử nghiệm</header>
+
   <div class="container">
+    <div class="config">
+      <label>Server URL</label>
+      <input id="serverUrl" placeholder="VD: http://localhost:3000/send-event">
+
+      <label>Pixel ID</label>
+      <input id="pixelId" placeholder="Nhập Pixel ID">
+
+      <label>Access Token</label>
+      <input id="accessToken" placeholder="Nhập Access Token">
+
+      <label>Test Event Code (tùy chọn)</label>
+      <input id="testEventCode" placeholder="Nhập mã test (nếu có)">
+    </div>
+
     <div class="grid">
       <div class="card">
         <img src="https://picsum.photos/300/200?1" alt="Sản phẩm 1">
@@ -42,30 +60,41 @@
       </div>
     </div>
   </div>
+
   <footer>© 2025 Cửa hàng thử nghiệm</footer>
 
   <script>
-    // Gửi event đến Facebook Conversion API
     async function trackEvent(productName, price) {
-      const res = await fetch("http://localhost:3000/send-event", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    pixel_id: pixelId,
-    access_token: accessToken,
-    product_name: productName,
-    price: price,
-    event_name: "Purchase",
-    test_event_code: testEventCode
-  })
-});
+      const serverUrl = document.getElementById("serverUrl").value.trim();
+      const pixelId = document.getElementById("pixelId").value.trim();
+      const accessToken = document.getElementById("accessToken").value.trim();
+      const testEventCode = document.getElementById("testEventCode").value.trim();
+
+      if (!serverUrl || !pixelId || !accessToken) {
+        alert("Vui lòng nhập đầy đủ Server URL, Pixel ID và Access Token");
+        return;
+      }
+
+      const payload = {
+        pixel_id: pixelId,
+        access_token: accessToken,
+        product_name: productName,
+        price: price,
+        event_name: "Purchase",
+        test_event_code: testEventCode
+      };
 
       try {
-        const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const res = await fetch(serverUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
         const data = await res.json();
-        alert("Đã gửi event: " + JSON.stringify(data));
-      } catch (e) {
-        alert("Lỗi gửi event: " + e.message);
+        alert("Kết quả gửi event:\n" + JSON.stringify(data, null, 2));
+      } catch (err) {
+        alert("Lỗi gửi event: " + err.message);
       }
     }
   </script>
