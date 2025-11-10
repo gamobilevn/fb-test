@@ -47,25 +47,18 @@
   <script>
     // Gửi event đến Facebook Conversion API
     async function trackEvent(productName, price) {
-      const pixelId = "YOUR_PIXEL_ID"; // thay bằng pixel thật
-      const accessToken = "YOUR_ACCESS_TOKEN"; // thay bằng access token thật
-      const testEventCode = ""; // thêm nếu muốn test trong Events Manager
-
-      const url = `https://graph.facebook.com/v16.0/${pixelId}/events?access_token=${accessToken}${testEventCode ? "&test_event_code=" + testEventCode : ""}`;
-      const payload = {
-        data: [{
-          event_name: "Purchase",
-          event_time: Math.floor(Date.now() / 1000),
-          action_source: "website",
-          event_source_url: location.href,
-          custom_data: { currency: "VND", value: price, content_name: productName },
-          user_data: {
-            client_user_agent: navigator.userAgent,
-            client_ip_address: "8.8.8.8",
-            external_id: "test_user_1"
-          }
-        }]
-      };
+      const res = await fetch("http://localhost:3000/send-event", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    pixel_id: pixelId,
+    access_token: accessToken,
+    product_name: productName,
+    price: price,
+    event_name: "Purchase",
+    test_event_code: testEventCode
+  })
+});
 
       try {
         const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
