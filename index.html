@@ -268,6 +268,21 @@
     </style>
 </head>
 <body>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const correctKey = "4CZVXBQ2UVDNOPKO47O46OLIGR67EBXT";
+
+    const userKey = prompt("🔒 Nhập key để truy cập:");
+    if (userKey === correctKey) {
+        alert("✅ Xác thực thành công!");
+    } else {
+        alert("❌ Sai key! Truy cập bị chặn.");
+        document.body.innerHTML =
+          "<h2 style='color:red;text-align:center;margin-top:40vh;'>Truy cập bị từ chối</h2>";
+    }
+});
+</script>
+
     <div class="container">
         <div class="header">
             <h1>Conversions API Test</h1>
